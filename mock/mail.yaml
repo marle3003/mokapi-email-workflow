@@ -1,0 +1,7 @@
+mail: '1.0'
+info:
+  title: Email Workflows
+servers:
+  login:
+    host: :2525
+    protocol: smtp

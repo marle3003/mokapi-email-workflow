@@ -52,7 +52,7 @@ jobs:
 
       - name: Save Mokapi logs
         if: ${{ !cancelled() }}
-        run: docker logs kvm-mokapi > /var/tmp/mokapi.log 2>&1
+        run: docker logs mokapi > /var/tmp/mokapi.log 2>&1
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}

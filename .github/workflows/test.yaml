@@ -32,6 +32,9 @@ jobs:
           npx playwright install-deps
           npx playwright install chromium
 
+      - name: Build frontend
+        run: npm run build
+
       - name: Start backend server
         run: |
           node backend/index.js &

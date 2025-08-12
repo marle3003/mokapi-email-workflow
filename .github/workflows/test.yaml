@@ -51,7 +51,7 @@ jobs:
         if: ${{ !cancelled() }}
         run: docker logs kvm-mokapi > /var/tmp/mokapi.log 2>&1
 
-      - name: Upload Mokapi logs
+      - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
           name: mokapi-logs

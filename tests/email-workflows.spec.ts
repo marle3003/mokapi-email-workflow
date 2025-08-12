@@ -29,7 +29,7 @@ test('Email verification after signup', async ({ page, request }) => {
   // Step 3: Fetch the mail body
   const res = await request.get(`http://localhost:8080/api/services/mail/messages/${mailList[0].messageId}`);
   const mail = await res.json()
-  await expect(mail).toEqual(expect.objectContaining({
+  await expect(mail.data).toEqual(expect.objectContaining({
     body: `<p>Thanks for signing up!</p><p><a href="http://example.com/verify?email=${encodeURIComponent(recipient)}">Verify your email</a></p>`
   }))
 });
@@ -62,7 +62,7 @@ test('Forgot password sends reset link', async ({ page, request }) => {
   // Step 3: Fetch the mail body
   const res = await request.get(`http://localhost:8080/api/services/mail/messages/${mailList[0].messageId}`);
   const mail = await res.json()
-  await expect(mail).toEqual(expect.objectContaining({
+  await expect(mail.data).toEqual(expect.objectContaining({
     body: `<p>Forgot your password?</p><p><a href=\"http://example.com/reset-password?email=${encodeURIComponent(recipient)}">Reset Password</a></p>`
   }))
 });

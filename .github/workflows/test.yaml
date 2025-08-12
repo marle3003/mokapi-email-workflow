@@ -6,6 +6,8 @@ on:
       - main
   pull_request:
   workflow_dispatch:
+  schedule:
+    - cron: "0 11 * * 5"
 
 jobs:
   test:
@@ -25,10 +27,10 @@ jobs:
           node-version: 23
 
       - name: Install Dependencies
-        run: npm ci
-
-      - name: Install Playwright
-        run: npx playwright install --with-deps
+        run: |
+          npm ci --ignore-scripts
+          npx playwright install-deps
+          npx playwright install chromium
 
       - name: Start backend server
         run: |
@@ -37,6 +39,23 @@ jobs:
 
       - name: Run Tests
         run: npx playwright test
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playright-report/
+          retention-days: 30
+
+      - name: Save Mokapi logs
+        if: ${{ !cancelled() }}
+        run: docker logs kvm-mokapi > /var/tmp/mokapi.log 2>&1
+
+      - name: Upload Mokapi logs
+        if: ${{ !cancelled() }}
+        with:
+          name: mokapi-logs
+          path: /var/tmp/mokapi.log
 
       - name: Stop backend server
         run: kill $(cat backend.pid)

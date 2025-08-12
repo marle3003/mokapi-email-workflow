@@ -44,7 +44,7 @@ jobs:
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
-          path: playright-report/
+          path: playwright-report/
           retention-days: 30
 
       - name: Save Mokapi logs

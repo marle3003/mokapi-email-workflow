@@ -1,0 +1,45 @@
+name: Testing Email Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Start Mokapi
+        run: |
+          docker run -d --rm --name mokapi -p 2525:2525 -p 8080:8080 -v ${{ github.workspace }}/mocks:/mocks mokapi/mokapi:latest /mocks
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 23
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Install Playwright
+        run: npx playwright install --with-deps
+
+      - name: Start backend server
+        run: |
+          node backend/index.js &
+          echo $! > backend.pid
+
+      - name: Run Tests
+        run: npx playwright test
+
+      - name: Stop backend server
+        run: kill $(cat backend.pid)
+
+      - name: Stop Mokapi
+        run: docker stop mokapi
